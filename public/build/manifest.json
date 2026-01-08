@@ -1,0 +1,28 @@
+{
+  "_alpine-LfbfoprD.js": {
+    "file": "assets/alpine-LfbfoprD.js",
+    "name": "alpine"
+  },
+  "_vendor-CGvu2Brt.js": {
+    "file": "assets/vendor-CGvu2Brt.js",
+    "name": "vendor"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-DT898Ofa.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_alpine-LfbfoprD.js",
+      "_vendor-CGvu2Brt.js"
+    ],
+    "css": [
+      "assets/app-bpZXHcyt.css"
+    ]
+  },
+  "resources/sass/app.scss": {
+    "file": "assets/app-pANGrN_G.css",
+    "src": "resources/sass/app.scss",
+    "isEntry": true
+  }
+}
