@@ -20,18 +20,7 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             UserRolesSeeder::class,
             
-            CustomersSeeder::class,
-            SuppliersSeeder::class,
-            UnitsSeeder::class,
-            BrandsSeeder::class,
-            ProductCategoriesSeeder::class,
-            ProductsSeeder::class,
-            // PurchasesSeeder::class,
-            // SalesSeeder::class,
-            // OrderSeeder::class,
-            AddProductSeeder::class,
-            // ReturnItemSeeder::class,
-            // UnsucessfullTransactionSeeder::class,
+           
             
 
         ]);
