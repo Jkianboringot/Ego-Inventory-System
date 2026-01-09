@@ -1,17 +1,13 @@
 <?php
 
 namespace Database\Seeders;
-
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UsersSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $predefinedUsers = [
@@ -23,14 +19,17 @@ class UsersSeeder extends Seeder
         ];
 
         foreach ($predefinedUsers as $user) {
-            User::factory()->create([
-                'name' => $user['name'],
-                'email' => $user['email'],
-            ]);
+            User::updateOrCreate(
+                ['email' => $user['email']],
+                [
+                    'name' => $user['name'],
+                    'password' => Hash::make('password123'), // default password
+                    'remember_token' => Str::random(10),
+                ]
+            );
         }
 
-        // Generate additional 50 random unique users
-
+        // Optional: generate additional 50 random users safely
+        // User::factory(50)->create();
     }
 }
-  
