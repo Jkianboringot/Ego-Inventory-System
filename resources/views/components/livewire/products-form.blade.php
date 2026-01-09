@@ -22,7 +22,7 @@
                         <!-- CATEGORY -->
                         <div class="col-md-6 col-12">
                             <label class="form-label">Product Category</label>
-                            <select wire:model.defer='product.product_category_id' class="form-select" required>
+                            <select wire:model.defer='product.product_category_id' class="form-select" >
                                 <option value="" selected>Select Category</option>
                                 @foreach ($productCategories as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -36,7 +36,7 @@
                         <!-- BRAND -->
                         <div class="col-md-6 col-12">
                             <label class="form-label">Product Brand</label>
-                            <select wire:model.defer='product.brand_id' class="form-select" required>
+                            <select wire:model.defer='product.brand_id' class="form-select" >
                                 <option value="" selected>Select Brand</option>
                                 @foreach ($brands as $brand)
                                 <option value="{{ $brand->id }}">{{ $brand->name }}</option>
