@@ -58,7 +58,6 @@
                                     <small class="form-text text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
-                                <div class="col-6">
                                     <div class="mb-3">
                                         <label class="form-label">Sale Invoice</label>
                                         <input wire:model.defer="return.sale_invoice" type="text" maxlength="50" minlength="1" class="form-control"
@@ -67,7 +66,6 @@
                                         <small class="form-text text-danger">{{ $message }} </small>
                                         @enderror
                                     </div>
-                                </div>
                             </div>
 
 

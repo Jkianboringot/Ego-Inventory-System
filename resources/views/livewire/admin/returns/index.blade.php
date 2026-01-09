@@ -31,6 +31,7 @@
                     <thead class="table-light">
                         <tr class="text-center">
                             <th>Return Type</th>
+                            <th>Sales Invoice</th>
                             <th>Date</th>
                             <th>BarCode</th>
                             <th>Products</th>
@@ -48,14 +49,14 @@
                         <tr class="text-center">
                             <td class="text-center align-middle">
                                 <span
-                                    class="badge  px-3 py-2 fw-bold d-inline-flex align-items-center justify-content-center
-        {{ $return->return_type === 'refunded' ? 'bg-danger' : 'bg-success' }}"
-                                    style="width: 120px;">
+                                    class="badge align-items-center justify-content-center
+        {{ $return->return_type === 'refunded' ? 'bg-danger' : 'bg-success' }}">
                                     {{ strtoupper($return->return_type) }}
                                 </span>
                             </td>
-
-
+                            <td>
+                                <x-livewire.partials.remarks-reason-modal :var="$return->sale_invoice" />
+                            </td>
 
                             <td>{{ \Carbon\Carbon::parse($return->created_at)->format('jS F, Y') }}</td>
                             <td>
@@ -84,7 +85,7 @@
                                     {{ strtoupper($return->status) }}
                                 </span>
                             </td>
-                            
+
                             <td> <strong>{{ rtrim(rtrim(number_format($return->total_amount ?? 0, 2), '0'), '.')  }}</strong>
                             </td>
                             <td> {{ rtrim(rtrim(number_format($return->adds_on ?? 0, 2), '0'), '.') }} </strong></td>

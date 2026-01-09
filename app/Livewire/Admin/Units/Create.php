@@ -20,7 +20,7 @@ class Create extends Component
     {
         return [
             'unit.name' => "required|min:1|max:50|unique:units,name",
-            'unit.symbol' => "required|max:1|min:2|unique:units,symbol",
+            'unit.symbol' => "required|max:20|min:1|unique:units,symbol",
         ];
     }
 
