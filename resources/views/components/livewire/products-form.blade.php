@@ -80,7 +80,7 @@
                         <!-- SUPPLIER -->
                         <div class="col-md-6 col-12">
                             <label class="form-label">Supplier</label>
-                            <select wire:model.defer='product.supplier_id' class="form-select" required>
+                            <select wire:model.defer='product.supplier_id' class="form-select" >
                                 <option value="" selected>Select Supplier</option>
                                 @foreach ($suppliers as $supplier)
                                 <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
