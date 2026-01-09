@@ -64,7 +64,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Reason</label>
-                                <textarea wire:model.defer="return.reason" class="form-control" maxlength="255" minlength="15"required
+                                <textarea wire:model.defer="return.reason" class="form-control" maxlength="255" minlength="3"required
                                     placeholder="Add reason for return"></textarea>
                                 @error('return.reason')
                                 <small class="form-text text-danger">{{ $message }}</small>

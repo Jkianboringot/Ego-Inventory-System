@@ -50,10 +50,10 @@ class Edit extends Component
             ],
             'price' => 'required|min:0.01|max:999999.99',
             'quantity' => 'required|numeric|min:0.01|max:999999.99',
-            'adds_on' => 'nullable|max:999999.99',
+            'adds_on' => 'nullable|min:0.01|max:999999.99',
 
             'selectedProductId' => 'required',
-            'return.reason' => 'required|max:255|min:0.015',
+            'return.reason' => 'required|max:255|min:3',
             'productList' => 'required',
             'productList.*.quantity' => 'required|numeric|min:0.01|max:999999', // note: numeric → remove decimals
         ];
