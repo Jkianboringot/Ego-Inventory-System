@@ -125,7 +125,7 @@
 
                                 </td>
                                 <td>
-                                    <span>{{ $product->category->name }}</span>
+                                    <span>{{ $product->category->name??'N/A' }}</span>
 
                                 </td>
                                 <td>
