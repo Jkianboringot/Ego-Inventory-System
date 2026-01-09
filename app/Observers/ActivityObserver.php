@@ -57,7 +57,7 @@ class ActivityObserver
                 
                 if (!$isDefault) {
                     // Real geolocation data
-                    $country = $locationData['country'] ?? 'Unknown';
+                    $country = $locationData['country'] ?? 'Philippines';
                     $region = $locationData['state_name'] ?? $locationData['state'] ?? 'Unknown';
                     $city = $locationData['city'] ?? 'Unknown';
                 } else {

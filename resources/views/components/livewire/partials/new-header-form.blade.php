@@ -3,7 +3,6 @@
 <div class="card-header">
     <div class="d-flex justify-content-between align-items-center">
         <h5 class="text-white fw-semibold mb-0">{{ $title }} list</h5>
-        @role(['Admin','Supervisor'])
         <form action="{{ route('admin.'.$route.'.create') }}" onsubmit="showLoading(event)">
             <button
                 type="submit"
@@ -19,7 +18,6 @@
                 </span>
             </button>
         </form>
-        @endrole
 
     </div>
 </div>
