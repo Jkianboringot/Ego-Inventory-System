@@ -21,13 +21,13 @@ class Edit extends Component
         return [
             'unit.name' => [
                 'required',
-                'max:50','min:5',
+                'max:50','min:1',
                 Rule::unique('units', 'name')->ignore($this->unit->id),
             ],
 
             'unit.symbol' => [
                 'required',
-                'max:5','min:2',
+                'max:5','min:1',
                 Rule::unique('units', 'symbol')->ignore($this->unit->id),
             ],
         ];

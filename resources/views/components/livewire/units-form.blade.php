@@ -16,7 +16,7 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Unit Name</label>
                             <input wire:model.defer='unit.name' type="text" class="form-control" name="name"
-                                id="name" aria-describedby="" placeholder="Enter unit name (e.g kilogram)"  maxlength="50" minlength="5" required />
+                                id="name" aria-describedby="" placeholder="Enter unit name (e.g kilogram)"  maxlength="50" minlength="1" required />
                             @error('unit.name')
                             <small id="" class="form-text text-danger">{{ $message }}</small>
                             @enderror
@@ -26,7 +26,7 @@
                         <div class="mb-3">
                             <label for="symbol" class="form-label">Unit Symbol</label>
                             <input wire:model.defer='unit.symbol' type="text" class="form-control" name="symbol"
-                                id="symbol" aria-describedby="" placeholder="Enter unit symbol (e.g kg)" maxlength="5" minlength="2" required/>
+                                id="symbol" aria-describedby="" placeholder="Enter unit symbol (e.g kg)" maxlength="5" minlength="1" required/>
                             @error('unit.symbol')
                             <small id="" class="form-text text-danger">{{ $message }}</small>
                             @enderror

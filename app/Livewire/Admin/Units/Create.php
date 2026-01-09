@@ -19,8 +19,8 @@ class Create extends Component
     function rules()
     {
         return [
-            'unit.name' => "required|min:5|max:50|unique:units,name",
-            'unit.symbol' => "required|max:5|min:2|unique:units,symbol",
+            'unit.name' => "required|min:1|max:50|unique:units,name",
+            'unit.symbol' => "required|max:1|min:2|unique:units,symbol",
         ];
     }
 
