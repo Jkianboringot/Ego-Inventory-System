@@ -26,15 +26,18 @@
                     <tr>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
-                        @if($op)
+                        @if ($op)
+
                         <td>
 
                             @foreach($user->plainText as $text)
                             <x-livewire.partials.remarks-reason-modal :var="$text->plain" />
 
                             @endforeach
+
                         </td>
                         @endif
+
                         <td>
                             @foreach($user->roles as $role)
                             <li>{{ $role->title }}</li>

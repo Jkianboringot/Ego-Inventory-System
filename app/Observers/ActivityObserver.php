@@ -37,9 +37,9 @@ class ActivityObserver
         $ip = request()?->ip();
 
         // Fallback if no HTTP request (artisan, job, seed, etc.)
-        if (! $ip) {
-            $ip = '127.0.0.1';
-        }
+        // if (! $ip) {
+        //     $ip = '127.0.0.1';
+        // }
 
         $location = geoip($ip);
 
