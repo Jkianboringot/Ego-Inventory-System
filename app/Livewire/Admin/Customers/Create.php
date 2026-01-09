@@ -19,18 +19,18 @@ class Create extends Component
     function rules()
     {
         return [
-            'customer.name' => 'required|string|max:75|min:5',
-            'customer.address' => 'nullable|string|max:255|min:15',
-            'customer.phone_number' => 'nullable|string|max:15',
+            'customer.name' => 'required|string|max:75|min:2',
+            'customer.address' => 'nullable|string|max:255|min:2',
+            'customer.phone_number' => 'nullable|string|max:15|min:2',
             'customer.tax_id' => [
-                'required',
+                'required','min:1',
                 'max:20',
                 Rule::unique('customers', 'tax_id')->whereNull('deleted_at')
             ],
 
             'customer.organization_type' => [
                 'nullable',
-                Rule::in(['refunded', 'exchanged']),
+                Rule::in(['Government', 'Private', 'NGO', 'COOPERATIVE']),
             ],
 
 

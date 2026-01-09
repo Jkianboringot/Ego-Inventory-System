@@ -20,17 +20,17 @@ class Edit extends Component
     function rules()
     {
         return [
-            'customer.name' => 'required|string|max:75|min:5',
+            'customer.name' => 'required|string|max:75|min:2',
 
 
-            'customer.address' => 'nullable|string|max:255|min:15',
+            'customer.address' => 'nullable|string|max:255|min:2',
             'customer.phone_number' => 'nullable|string|max:20',
-            'customer.tax_id' => ['required', 'max:20', Rule::unique('customers', 'tax_id')
+            'customer.tax_id' => ['required', 'max:20','min:1', Rule::unique('customers', 'tax_id')
                 ->ignore($this->customer->id)->whereNull('deleted_at')],
 
             'customer.organization_type' => [
                 'nullable',
-                Rule::in(['refunded', 'exchanged']),
+                Rule::in(['Government', 'Private', 'NGO', 'COOPERATIVE']),
             ],
 
 
