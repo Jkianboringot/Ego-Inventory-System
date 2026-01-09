@@ -117,7 +117,7 @@ class ApprovalCenter extends Component
         $editable = $editRequest->editable;
 
         $editRequest->update(['status' => 'rejected']);
-        
+
         if ($editable) {
             $editable->update(['status' => 'rejected']);
         }
@@ -209,12 +209,57 @@ class ApprovalCenter extends Component
             'unsuccessful' => $data['pendingUnsuccessful'] = UnsuccessfulTransaction::with('products')
                 ->where('status', 'pending')->orderByDesc('created_at')
                 ->simplePaginate(10),
-            'edits' => $data['pendingEdits'] = EditApproval::with(['editable', 'user'])
-                ->where('status', 'edit_pending')->orderByDesc('created_at')
-                ->simplePaginate(10),
+            'edits' => $data['pendingEdits'] = $this->getEditRequestsWithProductNames(),
             default => null,
         };
 
         return view('livewire.admin.approvals.approval-center', $data);
+    }
+
+    private function getEditRequestsWithProductNames()
+    {
+        $edits = EditApproval::with(['editable.products', 'user'])
+            ->where('status', 'edit_pending')
+            ->orderByDesc('created_at')
+            ->simplePaginate(10);
+
+        // Extract all product IDs from changes
+        $productIds = [];
+        foreach ($edits as $edit) {
+            if (isset($edit->changes['products']) && is_array($edit->changes['products'])) {
+                foreach ($edit->changes['products'] as $productChange) {
+                    if (isset($productChange['product_id'])) {
+                        $productIds[] = $productChange['product_id'];
+                    }
+                }
+            }
+        }
+
+        // Eager load all products at once
+        if (!empty($productIds)) {
+            $products = \App\Models\Product::whereIn('id', array_unique($productIds))
+                ->get()
+                ->keyBy('id');
+
+            // Attach product names to changes
+            foreach ($edits as $edit) {
+                // Get a mutable copy of changes
+                $changes = $edit->changes;
+
+                if (isset($changes['products']) && is_array($changes['products'])) {
+                    foreach ($changes['products'] as $key => $productChange) {
+                        if (isset($productChange['product_id'])) {
+                            $product = $products->get($productChange['product_id']);
+                            $changes['products'][$key]['product_name'] = $product ? $product->name : 'Product #' . $productChange['product_id'];
+                        }
+                    }
+
+                    // Set the modified changes back
+                    $edit->setAttribute('changes', $changes);
+                }
+            }
+        }
+
+        return $edits;
     }
 }

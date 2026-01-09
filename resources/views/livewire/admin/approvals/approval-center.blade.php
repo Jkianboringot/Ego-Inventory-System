@@ -222,7 +222,36 @@
                                         @endforeach
                                     </td>
                                     <td>
-                                        <pre class="bg-light p-2 rounded small mb-0">{{ json_encode($edit->changes, JSON_PRETTY_PRINT) }}</pre>
+                                        <div class="bg-light p-2 rounded small">
+                                            @php
+                                                $changes = $edit->changes;
+                                            @endphp
+                                            
+                                            @if(isset($changes['From']))
+                                                <strong>From:</strong> {{ $changes['From'] }}<br>
+                                            @endif
+                                            
+                                            @if(isset($changes['edited_date']))
+                                                <strong>Edited Date:</strong> {{ \Carbon\Carbon::parse($changes['edited_date'])->format('Y-m-d H:i') }}<br>
+                                            @endif
+                                            
+                                            @if(isset($changes['products']) && is_array($changes['products']))
+                                                <strong>Products:</strong><br>
+                                                @foreach($changes['products'] as $productChange)
+                                                    <div class="ms-3">
+                                                        • {{ $productChange['product_name'] ?? 'Product #' . ($productChange['product_id'] ?? 'N/A') }} 
+                                                        (Qty: {{ $productChange['quantity'] }})<br>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                            
+                                            @foreach($changes as $key => $value)
+                                                @if(!in_array($key, ['From', 'edited_date', 'products']))
+                                                    <strong>{{ ucfirst(str_replace('_', ' ', $key)) }}:</strong> 
+                                                    {{ is_array($value) ? json_encode($value) : $value }}<br>
+                                                @endif
+                                            @endforeach
+                                        </div>
                                     </td>
                                     <td>
                                         <button wire:click="approve({{ $edit->id }}, 'Edit')" class="btn btn-success btn-sm">

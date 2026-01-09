@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\AddProducts;
 use App\Models\ActivityLog;
 use App\Models\EditApproval;
 use App\Models\AddProduct;
+use App\Models\Product;
 use App\Traits\DeleteCartItem;
 use App\Traits\ProductSearch;
 use App\Traits\SelectProduct;
@@ -22,16 +23,12 @@ class Edit extends Component
     use WithCancel;
     use DeleteCartItem;
     use UpdatedProductSearch;
-
     use SelectProduct;
-    public $productSearch;
 
+    public $productSearch;
     public $selectedProductId;
     protected string $context = 'addproducts';
-
     public $quantity;
-
-
     public AddProduct $addProduct;
     public $productList = [];
 
@@ -39,21 +36,16 @@ class Edit extends Component
     function rules()
     {
         return [
-            'productList.*.quantity' => 'required|numeric|min:0.01|max:999999', // note: integer → remove decimals
-
+            'productList.*.quantity' => 'required|numeric|min:0.01|max:999999',
             'quantity' => 'required|numeric|min:0.01|max:999999.99',
             'selectedProductId' => 'required',
             'productList' => 'required',
-            
         ];
     }
 
 
-
     function mount($id)
     {
-
-
         $this->addProduct = AddProduct::findOrFail($id);
 
         $this->productList = $this->addProduct->products->map(fn($product) => [
@@ -63,15 +55,12 @@ class Edit extends Component
     }
 
 
-
-
-
     function addToList()
     {
         $this->validateOnly('selectedProductId');
         $this->validateOnly('quantity');
+        
         try {
-
             foreach ($this->productList as $key => $item) {
                 if ($item['product_id'] == $this->selectedProductId) {
                     $this->productList[$key]['quantity'] += $this->quantity;
@@ -94,14 +83,29 @@ class Edit extends Component
 
     protected function activityLog()
     {
+        // Get all product IDs from productList
+        $productIds = array_column($this->productList, 'product_id');
+        
+        // Fetch all products in one query
+        $products = Product::whereIn('id', $productIds)
+            ->get()
+            ->keyBy('id');
+
+        // Enrich productList with product names
+        $enrichedProductList = array_map(function($item) use ($products) {
+            $product = $products->get($item['product_id']);
+            return [
+                'product_id' => $item['product_id'],
+                'product_name' => $product ? $product->name : 'Product #' . $item['product_id'],
+                'quantity' => $item['quantity'],
+            ];
+        }, $this->productList);
 
         $changes = [
             'From' => 'New Arrivals',
-
             'edited_date' => $this->addProduct->created_at,
-            'products' => $this->productList,
+            'products' => $enrichedProductList,
         ];
-
 
         EditApproval::create([
             'user_id'       => auth()->id(),
@@ -120,37 +124,34 @@ class Edit extends Component
             'user_agent' => request()->header('User-Agent'),
         ]);
     }
+
+    
     function save()
     {
         $this->validateOnly('productList');
         $this->validateOnly('productList.*.quantity');
 
-
         try {
             foreach ($this->productList as $listItem) {
-
                 if ($listItem['quantity'] <= 0) {
                     $this->dispatch('done', error: "Quantity cannot be zero");
                     return;
                 }
             }
+            
             DB::beginTransaction();
 
             $this->activityLog();
             $this->addProduct->status = 'edit_pending';
-
             $this->addProduct->update();
 
             $this->addProduct->products()->detach();
 
             foreach ($this->productList as $item) {
-
                 $this->addProduct->products()->attach($item['product_id'], [
-                    'quantity'   => $item['quantity'],
+                    'quantity' => $item['quantity'],
                 ]);
             }
-
-
 
             DB::commit();
 
@@ -164,18 +165,14 @@ class Edit extends Component
         }
     }
 
+
     public function render()
     {
-
-
         return view(
             'livewire.admin.add-products.edit',
             [
                 'products' => $this->ProductSearch()
             ]
-
         );
     }
 }
-
-// if something brike look at make addProduct funstion i change it from atteach to detach

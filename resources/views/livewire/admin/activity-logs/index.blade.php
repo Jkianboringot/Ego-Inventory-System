@@ -77,75 +77,162 @@
                         </span>
                     </td>
 
-                  
-
                     <!-- Changes -->
                     <td>
                         @php
-                        $changes = json_decode($log->changes, true);
+                        // Use enriched_changes which is already an array
+                        $changes = $log->enriched_changes;
                         $isUpdate = strtolower($log->action) === 'updated';
                         @endphp
 
-                        @if(is_array($changes) && count($changes) > 0 && $isUpdate)
-                            <div x-data="{ open: false }" class="position-relative d-inline-block">
-                                <!-- Compact Trigger -->
-                                <button
-                                    type="button"
-                                    class="btn btn-link p-0 text-decoration-none"
-                                    @click="open = !open">
-                                    <i class="bi bi-file-text text-primary me-1"></i>
-                                    <span class="text-primary fw-semibold">{{ count($changes) }}</span>
-                                    <small class="text-muted ms-1">{{ count($changes) === 1 ? 'change' : 'changes' }}</small>
-                                </button>
+                        @if($changes && is_array($changes) && count($changes) > 0 && $isUpdate)
+                            @if(isset($changes['products']) && is_array($changes['products']))
+                                <!-- Updated action with products: show in expandable popover -->
+                                <div x-data="{ open: false }" class="position-relative d-inline-block">
+                                    <!-- Compact Trigger -->
+                                    <button
+                                        type="button"
+                                        class="btn btn-link p-0 text-decoration-none"
+                                        @click="open = !open">
+                                        <i class="bi bi-box-seam text-primary me-1"></i>
+                                        <span class="text-primary fw-semibold">{{ count($changes['products']) }}</span>
+                                        <small class="text-muted ms-1">{{ count($changes['products']) === 1 ? 'product' : 'products' }}</small>
+                                    </button>
 
-                                <!-- Popover -->
-                                <div
-                                    x-show="open"
-                                    x-transition
-                                    class="position-absolute bg-white border rounded shadow-lg"
-                                    style="display: none; min-width: 350px; max-width: 500px; z-index: 1050; left: 0; top: calc(100% + 5px);"
-                                    @click.outside="open = false">
-                                    
-                                    <!-- Header -->
-                                    <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom bg-primary bg-opacity-10">
-                                        <strong class="text-dark small">
-                                            <i class="bi bi-list-check me-1"></i>Change Details
-                                        </strong>
-                                        <button 
-                                            type="button" 
-                                            class="btn-close btn-sm" 
-                                            @click="open = false"
-                                            style="font-size: 0.7rem;"></button>
-                                    </div>
+                                    <!-- Popover -->
+                                    <div
+                                        x-show="open"
+                                        x-transition
+                                        class="position-absolute bg-white border rounded shadow-lg"
+                                        style="display: none; min-width: 400px; max-width: 500px; z-index: 1050; left: 0; top: calc(100% + 5px);"
+                                        @click.outside="open = false">
+                                        
+                                        <!-- Header -->
+                                        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom bg-primary bg-opacity-10">
+                                            <strong class="text-dark small">
+                                                <i class="bi bi-box-seam me-1"></i>Product Changes
+                                            </strong>
+                                            <button 
+                                                type="button" 
+                                                class="btn-close btn-sm" 
+                                                @click="open = false"
+                                                style="font-size: 0.7rem;"></button>
+                                        </div>
 
-                                    <!-- Changes List -->
-                                    <div class="p-2" style="max-height: 300px; overflow-y: auto;">
-                                        @foreach($changes as $key => $value)
-                                            <div class="p-2 mb-2 rounded border-start border-3 border-primary" style="background-color: #f8f9fa;">
-                                                <div style="font-weight: 600; color: #495057; font-size: 0.85rem; margin-bottom: 4px;">
-                                                    {{ ucfirst(str_replace('_', ' ', $key)) }}
+                                        <!-- Info Section -->
+                                        <div class="px-3 py-2 bg-light border-bottom">
+                                            @if(isset($changes['From']))
+                                                <div class="mb-1">
+                                                    <strong class="text-primary" style="font-size: 0.85rem;">From:</strong> 
+                                                    <span class="badge bg-secondary" style="font-size: 0.8rem;">{{ $changes['From'] }}</span>
                                                 </div>
-                                                <div style="color: #212529; font-size: 0.85rem; word-break: break-word;">
-                                                    @if(is_array($value))
-                                                        <pre style="margin: 0; font-size: 0.75rem; white-space: pre-wrap; background-color: #ffffff; padding: 8px; border-radius: 4px;">{{ json_encode($value, JSON_PRETTY_PRINT) }}</pre>
-                                                    @else
-                                                        {{ Str::limit($value, 100) }}
-                                                    @endif
+                                            @endif
+                                            
+                                            @if(isset($changes['edited_date']))
+                                                <div>
+                                                    <strong class="text-primary" style="font-size: 0.85rem;">Date:</strong> 
+                                                    <span class="text-muted" style="font-size: 0.85rem;">
+                                                        {{ \Carbon\Carbon::parse($changes['edited_date'])->format('M d, Y g:i A') }}
+                                                    </span>
                                                 </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
+                                            @endif
+                                        </div>
 
-                                    <!-- Footer -->
-                                    <div class="px-3 py-2 border-top bg-light">
-                                        <small class="text-muted">
-                                            <i class="bi bi-check-circle text-success me-1"></i>
-                                            {{ count($changes) }} total
-                                        </small>
+                                        <!-- Products List -->
+                                        <div class="p-2" style="max-height: 350px; overflow-y: auto;">
+                                            @foreach($changes['products'] as $product)
+                                                <div class="d-flex align-items-start mb-2 p-2 bg-light rounded border">
+                                                    <i class="bi bi-box-seam text-success me-2 mt-1" style="font-size: 1.1rem;"></i>
+                                                    <div class="flex-grow-1">
+                                                        <div class="fw-medium" style="font-size: 0.9rem; color: #212529;">
+                                                            {{ $product['product_name'] ?? 'Product #' . ($product['product_id'] ?? 'N/A') }}
+                                                        </div>
+                                                        <div class="text-muted" style="font-size: 0.8rem;">
+                                                            <span class="me-2">
+                                                                <i class="bi bi-upc-scan"></i> 
+                                                                ID: {{ $product['product_id'] ?? 'N/A' }}
+                                                            </span>
+                                                            <span>
+                                                                <i class="bi bi-stack"></i> 
+                                                                Qty: <strong>{{ $product['quantity'] }}</strong>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+
+                                        <!-- Footer -->
+                                        <div class="px-3 py-2 border-top bg-light">
+                                            <small class="text-muted">
+                                                <i class="bi bi-check-circle text-success me-1"></i>
+                                                {{ count($changes['products']) }} product(s) total
+                                            </small>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        @elseif(is_array($changes) && count($changes) > 0)
+                            @else
+                                <!-- Updated action without products: show regular changes -->
+                                <div x-data="{ open: false }" class="position-relative d-inline-block">
+                                    <!-- Compact Trigger -->
+                                    <button
+                                        type="button"
+                                        class="btn btn-link p-0 text-decoration-none"
+                                        @click="open = !open">
+                                        <i class="bi bi-file-text text-primary me-1"></i>
+                                        <span class="text-primary fw-semibold">{{ count($changes) }}</span>
+                                        <small class="text-muted ms-1">{{ count($changes) === 1 ? 'change' : 'changes' }}</small>
+                                    </button>
+
+                                    <!-- Popover -->
+                                    <div
+                                        x-show="open"
+                                        x-transition
+                                        class="position-absolute bg-white border rounded shadow-lg"
+                                        style="display: none; min-width: 350px; max-width: 500px; z-index: 1050; left: 0; top: calc(100% + 5px);"
+                                        @click.outside="open = false">
+                                        
+                                        <!-- Header -->
+                                        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom bg-primary bg-opacity-10">
+                                            <strong class="text-dark small">
+                                                <i class="bi bi-list-check me-1"></i>Change Details
+                                            </strong>
+                                            <button 
+                                                type="button" 
+                                                class="btn-close btn-sm" 
+                                                @click="open = false"
+                                                style="font-size: 0.7rem;"></button>
+                                        </div>
+
+                                        <!-- Changes List -->
+                                        <div class="p-2" style="max-height: 300px; overflow-y: auto;">
+                                            @foreach($changes as $key => $value)
+                                                <div class="p-2 mb-2 rounded border-start border-3 border-primary" style="background-color: #f8f9fa;">
+                                                    <div style="font-weight: 600; color: #495057; font-size: 0.85rem; margin-bottom: 4px;">
+                                                        {{ ucfirst(str_replace('_', ' ', $key)) }}
+                                                    </div>
+                                                    <div style="color: #212529; font-size: 0.85rem; word-break: break-word;">
+                                                        @if(is_array($value))
+                                                            <pre style="margin: 0; font-size: 0.75rem; white-space: pre-wrap; background-color: #ffffff; padding: 8px; border-radius: 4px;">{{ json_encode($value, JSON_PRETTY_PRINT) }}</pre>
+                                                        @else
+                                                            {{ Str::limit($value, 100) }}
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+
+                                        <!-- Footer -->
+                                        <div class="px-3 py-2 border-top bg-light">
+                                            <small class="text-muted">
+                                                <i class="bi bi-check-circle text-success me-1"></i>
+                                                {{ count($changes) }} total
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @elseif($changes && is_array($changes) && count($changes) > 0)
                             <!-- Non-update actions: show inline -->
                             <div style="max-width: 250px;">
                                 @foreach($changes as $key => $value)
@@ -185,7 +272,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="text-center py-5">
+                    <td colspan="6" class="text-center py-5">
                         <div style="color: #6c757d;">
                             <svg width="48" height="48" style="opacity: 0.3; margin-bottom: 12px;" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
