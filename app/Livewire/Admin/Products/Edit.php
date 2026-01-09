@@ -37,11 +37,11 @@ class Edit extends Component
                     ->ignore($this->product->id)
                     ->whereNull('deleted_at')
             ],
-            'product.brand_id' => 'required|exists:brands,id',
+            'product.brand_id' => 'nullable|exists:brands,id',
             'product.supplier_id' => 'required|exists:suppliers,id',
             'product.description' => 'nullable|string|max:600|min:15',
             'product.unit_id' => 'required|integer|exists:units,id',
-            'product.product_category_id' => 'required|exists:product_categories,id',
+            'product.product_category_id' => 'nullable|exists:product_categories,id',
             'product.purchase_price' => 'required|numeric|min:1|max:999999.99',
             'product.sale_price' => 'required|numeric|min:1|max:999999.99',
             'product.location' => 'nullable|string|max:20|min:3',

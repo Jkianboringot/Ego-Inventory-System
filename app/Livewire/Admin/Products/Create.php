@@ -30,11 +30,11 @@ class Create extends Component
                 'max:75','min:5',
                 Rule::unique('products', 'name')->whereNull('deleted_at')
             ],
-            'product.brand_id' => 'required|exists:brands,id',
+            'product.brand_id' => 'nullable|exists:brands,id',
             'product.supplier_id' => 'required|exists:suppliers,id',
             'product.description' => 'nullable|string|max:600|min:15',
             'product.unit_id' => 'required|exists:units,id',
-            'product.product_category_id' => 'required|exists:product_categories,id',
+            'product.product_category_id' => 'nullable|exists:product_categories,id',
             'product.purchase_price' => 'required|numeric|min:1|max:999999.99',
             'product.sale_price' => 'required|numeric|min:1|max:999999.99',
             'product.location' => 'nullable|max:20|min:3',
