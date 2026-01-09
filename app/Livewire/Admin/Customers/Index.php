@@ -64,8 +64,8 @@ class Index extends Component
             ->selectRaw('
                 COUNT(DISTINCT CASE WHEN sales.deleted_at IS NULL THEN sales.id END) AS sales_count,
                 COALESCE(SUM(CASE WHEN product_sale.deleted_at IS NULL THEN product_sale.quantity * product_sale.unit_price END), 0) AS total_sale_amount,
-                COUNT(DISTINCT CASE WHEN orders.deleted_at IS NULL AND orders.order_status = 0 THEN orders.id END) AS orders_count,
-                COALESCE(SUM(CASE WHEN order_product.deleted_at IS NULL AND orders.order_status = 0 THEN order_product.quantity * order_product.unit_price END), 0) AS total_order_amount
+                COUNT(DISTINCT CASE WHEN orders.deleted_at IS NULL  THEN orders.id END) AS orders_count,
+                COALESCE(SUM(CASE WHEN order_product.deleted_at IS NULL  THEN order_product.quantity * order_product.unit_price END), 0) AS total_order_amount
             ')
             ->groupBy('customers.id')
             ->get()
