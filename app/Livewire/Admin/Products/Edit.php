@@ -44,7 +44,7 @@ class Edit extends Component
             'product.product_category_id' => 'nullable|exists:product_categories,id',
             'product.purchase_price' => 'required|numeric|min:1|max:999999.99',
             'product.sale_price' => 'required|numeric|min:1|max:999999.99',
-            'product.location' => 'nullable|string|max:20|min:3',
+            'product.location' => 'nullable|string|max:20|min:1',
             'product.barcode' => [
                 'required',
                 'max:30','min:5',

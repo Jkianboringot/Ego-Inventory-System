@@ -61,7 +61,7 @@
                         <div class="col-md-6 col-12">
                             <label class="form-label">Shelf Location</label>
                             <input wire:model.defer='product.location' type="text" class="form-control" placeholder="Shelf Location (e.g A1-03)"
-                                maxlength="20" minlength="5">
+                                maxlength="20" minlength="1">
                             @error('product.location')
                             <small class="text-danger">{{ $message }}</small>
                             @enderror
