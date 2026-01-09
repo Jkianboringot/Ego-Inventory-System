@@ -23,7 +23,7 @@ class UsersSeeder extends Seeder
                 ['email' => $user['email']],
                 [
                     'name' => $user['name'],
-                    'password' => Hash::make('password123'), // default password
+                    'password' => Hash::make('123'), // default password
                     'remember_token' => Str::random(10),
                 ]
             );
