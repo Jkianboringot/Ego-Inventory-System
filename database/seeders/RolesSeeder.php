@@ -45,10 +45,7 @@ class RolesSeeder extends Seeder
                   'permissions' => Json::encode(['Return and Exchange Clerk']),
 
 
-            ],[
-             'title' => 'Inventory Clerk',
-                  'permissions' => Json::encode(['Inventory Clerk']),
-]
+            ]
         ]);
     }
 }
