@@ -28,7 +28,7 @@
             @endrole
 
             {{-- Products --}}
-            @role(['Tagger','Supervisor'])
+            @role(['Inventory Clerk','Supervisor'])
             <x-new-nav-link-dropdown title="Products" bi_icon="bi-box-seam">
 
                 @role('Supervisor')

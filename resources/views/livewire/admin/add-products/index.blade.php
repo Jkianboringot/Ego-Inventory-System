@@ -66,14 +66,11 @@
                             <td><strong>{{ rtrim(rtrim(number_format($addProduct->total_quantity ?? 0, 2), '0'), '.') }}</strong></td>
 
                             <td>
-                                <span class="badge {{ in_array($addProduct->status, ['pending', 'rejected']) ? 'bg-danger' : 'bg-success' }}">
-                                    <a
-                                        href="{{ route('admin.approvals.approvalcenter') }}"
-                                        class="text-white text-decoration-none fw-bold">
-                                        {{ strtoupper($addProduct->status) }}
-                                    </a>
+                                <span class="badge {{ in_array($addProduct->status, ['pending', 'rejected']) ? 'bg-danger' : 'bg-success' }} text-white fw-bold">
+                                    {{ strtoupper($addProduct->status) }}
                                 </span>
                             </td>
+
 
 
                             <td>

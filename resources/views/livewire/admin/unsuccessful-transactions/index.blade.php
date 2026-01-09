@@ -66,13 +66,11 @@
                             <td><strong>{{ rtrim(rtrim(number_format($unsuccessfulTransaction->total_quantity ?? 0, 2), '0'), '.') }}</strong></td>
 
 
+                     
+                            
                             <td>
-                                <span class="badge {{ in_array($unsuccessfulTransaction->status, ['pending', 'rejected']) ? 'bg-danger' : 'bg-success' }}">
-                                    <a
-                                        href="{{ route('admin.approvals.approvalcenter') }}"
-                                        class="text-white text-decoration-none fw-bold">
-                                        {{ strtoupper($unsuccessfulTransaction->status) }}
-                                    </a>
+                                <span class="badge {{ in_array($unsuccessfulTransaction->status, ['pending', 'rejected']) ? 'bg-danger' : 'bg-success' }} text-white fw-bold">
+                                    {{ strtoupper($unsuccessfulTransaction->status) }}
                                 </span>
                             </td>
 

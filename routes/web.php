@@ -120,7 +120,7 @@ Route::middleware([
         Route::get('{id}/edit', \App\Livewire\Admin\ProductCategories\Edit::class)->name('edit');
     });
 
-    Route::prefix('products')->middleware('permission:Supervisor,Admin,Tagger')->name('products.')->group(function () {
+    Route::prefix('products')->middleware('permission:Supervisor,Admin,Inventory Clerk')->name('products.')->group(function () {
         Route::get('/', \App\Livewire\Admin\Products\Index::class)->name('index');
         Route::get('/create', \App\Livewire\Admin\Products\Create::class)->middleware('permission:Supervisor,Admin')->name('create');
         Route::get('{id}/edit', \App\Livewire\Admin\Products\Edit::class)->middleware('permission:Supervisor,Admin')->name('edit');

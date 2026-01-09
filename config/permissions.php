@@ -5,10 +5,9 @@ return [
         'Admin',
         'Supervisor',
         'Sales Clerk',
-        'Inventory Clerk',
         'Warehouse Keeper',
         'Return and Exchange Clerk',
-        'Tagger'
+        'Inventory Clerk'
     ]
 ];
 

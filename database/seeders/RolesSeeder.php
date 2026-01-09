@@ -19,7 +19,7 @@ class RolesSeeder extends Seeder
                 'title' => 'Supervisor',
                 'permissions' => Json::encode(["Admin", "Supervisor",
                                 "Sales Clerk", "Inventory Clerk", "Warehouse Keeper",
-                                "Return and Exchange Clerk",'Tagger']),
+                                "Return and Exchange Clerk",'Inventory Clerk']),
                 
             ],
 
@@ -46,8 +46,8 @@ class RolesSeeder extends Seeder
 
 
             ],[
-             'title' => 'Tagger',
-                  'permissions' => Json::encode(['Tagger']),
+             'title' => 'Inventory Clerk',
+                  'permissions' => Json::encode(['Inventory Clerk']),
 ]
         ]);
     }

@@ -32,7 +32,7 @@
                                 <th>Unit Cost</th>
                                 @endrole
 
-                                @role(['Admin','Supervisor','Tagger'])
+                                @role(['Admin','Supervisor','Inventory Clerk'])
                                 <th>Actions</th>
                                 @endrole
 

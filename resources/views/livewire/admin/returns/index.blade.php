@@ -80,14 +80,11 @@
 
 
                             <td>
-                                <span class="badge {{ in_array($return->status, ['pending', 'rejected']) ? 'bg-danger' : 'bg-success' }}">
-                                    <a
-                                        href="{{ route('admin.approvals.approvalcenter') }}"
-                                        class="text-white text-decoration-none fw-bold">
-                                        {{ strtoupper($return->status) }}
-                                    </a>
+                                <span class="badge {{ in_array($return->status, ['pending', 'rejected']) ? 'bg-danger' : 'bg-success' }} text-white fw-bold">
+                                    {{ strtoupper($return->status) }}
                                 </span>
                             </td>
+                            
                             <td> <strong>{{ rtrim(rtrim(number_format($return->total_amount ?? 0, 2), '0'), '.')  }}</strong>
                             </td>
                             <td> {{ rtrim(rtrim(number_format($return->adds_on ?? 0, 2), '0'), '.') }} </strong></td>
