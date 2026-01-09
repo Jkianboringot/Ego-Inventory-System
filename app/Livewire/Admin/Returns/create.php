@@ -54,6 +54,7 @@ class Create extends Component
             'adds_on' => 'nullable|min:0.01|max:999999.99',
 
             'return.reason' => 'required|max:255|min:3',
+            'return.sale_invoice' => 'nullable|max:50|min:1',
             'productList' => 'required',
             'productList.*.quantity' => 'required|numeric|min:0.01|max:999999', // note: numeric → remove decimals
         ];

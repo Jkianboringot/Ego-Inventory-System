@@ -58,13 +58,22 @@
                                     <small class="form-text text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
-
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Sale Invoice</label>
+                                        <input wire:model.defer="return.sale_invoice" type="text" maxlength="50" minlength="1" class="form-control"
+                                            placeholder="Enter Sale Invoice"  />
+                                        @error('return.sale_invoice')
+                                        <small class="form-text text-danger">{{ $message }} </small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
 
 
                             <div class="mb-3">
                                 <label class="form-label">Reason</label>
-                                <textarea wire:model.defer="return.reason" class="form-control" maxlength="255" minlength="3"required
+                                <textarea wire:model.defer="return.reason" class="form-control" maxlength="255" minlength="3" required
                                     placeholder="Add reason for return"></textarea>
                                 @error('return.reason')
                                 <small class="form-text text-danger">{{ $message }}</small>
@@ -124,26 +133,26 @@
                                         <x-livewire.partials.quantity-input :$key />
                                     </td>
                                     <td>{{ number_format($listItem['price'], 2)??0 }}</td>
-                                  
+
                                     <td>{{ number_format($listItem['adds_on'], 2)    }}</td>
-  
-  
+
+
                                     {{-- <input
                                         type="number"
                                         min="1"
                                         step="1"
                                         wire:model="productList.{{ $key }}.adds_on"
-                                        class="form-control form-control-sm text-center"
-                                        style="width: 80px; margin: auto;"
-                                         />
-                                            <!-- keep this as a gift, its a cool thing and a good thing to have or not 
+                                    class="form-control form-control-sm text-center"
+                                    style="width: 80px; margin: auto;"
+                                    />
+                                    <!-- keep this as a gift, its a cool thing and a good thing to have or not 
                                              we can just add this in update if we want its not like thay can add more, lets 
                                              just say if they want that they can get it in update, this cannot be seen in ui btw-->
                                     @error("productList.$key.adds_on")
                                     <small class="text-danger">{{ $message }}</small>
                                     @enderror
 
-                                     --}}
+                                    --}}
                                     <td class="text-center">
                                         <x-livewire.partials.add-sub-delete-form :listItem="$listItem" :key="$key" />
                                     </td>

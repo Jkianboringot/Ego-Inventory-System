@@ -11,7 +11,7 @@ class ReturnItem extends Model
 {
     use SoftDeletes, HasFactory;
 
-    protected $fillable = ['return_type', 'reason', 'status'];
+    protected $fillable = ['return_type', 'reason', 'status','sale_invoice'];
 
     public function editRequests()
     {
