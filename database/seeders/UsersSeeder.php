@@ -20,7 +20,6 @@ class UsersSeeder extends Seeder
             ['name' => 'Loyd Oragon', 'email' => 'inventoryclerk@gmail.com'],
             ['name' => 'Arjey Sigwil', 'email' => 'warehousekeeper@gmail.com'],
             ['name' => 'Jerlyn Fernandex', 'email' => 'returnandexchange@gmail.com'],
-            ['name' => 'Inventory Clerk', 'email' => 'Inventory Clerk@gmail.com'],
         ];
 
         foreach ($predefinedUsers as $user) {
