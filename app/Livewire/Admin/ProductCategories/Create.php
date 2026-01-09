@@ -19,7 +19,7 @@ class Create extends Component
     function rules()
     {
         return [
-            'category.name' => 'required|max:75|min:5',
+            'category.name' => 'required|max:75|min:1',
 
 
         ];

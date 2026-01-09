@@ -17,7 +17,7 @@
                 <div class="mb-3">
                     <label for="name" class="form-label">Category Name</label>
                     <input wire:model.defer='category.name' type="text" class="form-control" name="name" id="name"
-                        aria-describedby="" placeholder="Enter category's name (e.g fishing supplies)" maxlength="75" minlength="5" />
+                        aria-describedby="" placeholder="Enter category's name (e.g fishing supplies)" maxlength="75" minlength="1" />
                     @error('category.name')
                     <small id="" class="form-text text-danger">{{ $message }}</small>
                     @enderror

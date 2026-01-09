@@ -20,7 +20,7 @@ class Edit extends Component
     function rules()
     {
         return [
-            'category.name' => ['required','max:75','min:5',Rule::unique('product_categories','name')
+            'category.name' => ['required','max:75','min:1',Rule::unique('product_categories','name')
             ->ignore($this->category->id)]
 
 
