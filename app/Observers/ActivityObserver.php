@@ -41,12 +41,40 @@ class ActivityObserver
             $ip = '127.0.0.1';
         }
 
+        // Initialize default values
+        $country = 'Unknown';
+        $region = 'Unknown';
+        $city = 'Unknown';
+
         // Only get geolocation for non-local IPs
         if ($ip !== '127.0.0.1' && $ip !== 'localhost' && !$this->isPrivateIP($ip)) {
-            $location = geoip($ip);
-            $country = $location->country;
-            $region = $location->state;
-            $city = $location->city;
+            try {
+                $location = geoip($ip);
+                $locationData = $location->toArray();
+                
+                // Check if geoip returned default/fallback data
+                $isDefault = $locationData['default'] ?? false;
+                
+                if (!$isDefault) {
+                    // Real geolocation data
+                    $country = $locationData['country'] ?? 'Unknown';
+                    $region = $locationData['state_name'] ?? $locationData['state'] ?? 'Unknown';
+                    $city = $locationData['city'] ?? 'Unknown';
+                } else {
+                    // Fallback data - database not configured properly
+                    $country = 'Unknown (DB not configured)';
+                    $region = 'Unknown';
+                    $city = 'Unknown';
+                    
+                    \Log::warning('GeoIP returning default data. Run: php artisan geoip:update', [
+                        'ip' => $ip,
+                        'location_data' => $locationData
+                    ]);
+                }
+            } catch (\Exception $e) {
+                // Log error if geoip fails
+                \Log::error('GeoIP Error: ' . $e->getMessage(), ['ip' => $ip]);
+            }
         } else {
             // Set default values for local/private IPs
             $country = 'Local';
