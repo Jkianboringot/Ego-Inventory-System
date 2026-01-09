@@ -17,10 +17,10 @@ class Create extends Component
     function rules()
     {
         return [
-            'supplier.name' => "required|string|max:75|min:5",
-            'supplier.address' => "nullable|string|max:255|min:15",
+            'supplier.name' => "required|string|max:75|min:2",
+            'supplier.address' => "nullable|string|max:255|min:2",
             'supplier.phone_number' => "nullable|string|max:15",
-            'supplier.tax_id' => [ 'required','max:20',
+            'supplier.tax_id' => [ 'required','max:20','min:1',
                 Rule::unique('suppliers', 'tax_id')->whereNull('deleted_at')],
             'supplier.account_number' => "nullable|string|max:35",
         ];
