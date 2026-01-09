@@ -23,7 +23,7 @@ class Create extends Component
     function rules()
     {
         return [
-            'brand.name' => 'required|max:75|min:5|unique:brands,name'
+            'brand.name' => 'required|max:75|min:1|unique:brands,name'
             // 'image' => 'nullable|image|max:2048'
         ];
     }

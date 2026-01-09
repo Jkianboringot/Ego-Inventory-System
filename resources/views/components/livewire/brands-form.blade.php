@@ -20,7 +20,7 @@
                     <div class="col-12">
                         <label for="name" class="form-label">Name</label>
                         <input wire:model.defer='brand.name' type="text" class="form-control" name="name"
-                            id="name" placeholder="Enter brand's name (e.g Nike)" maxlength="75" minlength="5" required/>
+                            id="name" placeholder="Enter brand's name (e.g Nike)" maxlength="75" minlength="1" required/>
                         @error('brand.name')
                         <small class="form-text text-danger">{{ $message }}</small>
                         @enderror

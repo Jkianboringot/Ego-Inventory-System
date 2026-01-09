@@ -28,7 +28,7 @@ class Edit extends Component
         return [
                'brand.name' => [
                 'required',
-                'max:75','min:5',
+                'max:75','min:1',
                 Rule::unique('brands', 'name')->ignore($this->brand->id)
                 ,
             ],
