@@ -32,7 +32,7 @@ class Edit extends Component
         return [
             'product.name' => [
                 'required',
-                'max:75','min:5',
+                'max:75','min:3',
                 Rule::unique('products', 'name')
                     ->ignore($this->product->id)
                     ->whereNull('deleted_at')
@@ -47,7 +47,7 @@ class Edit extends Component
             'product.location' => 'nullable|string|max:20|min:1',
             'product.barcode' => [
                 'required',
-                'max:30','min:5',
+                'max:30','min:3',
                 Rule::unique('products', 'barcode')
                     ->ignore($this->product->id)
                     ->whereNull('deleted_at')

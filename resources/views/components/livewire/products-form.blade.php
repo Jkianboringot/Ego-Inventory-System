@@ -51,7 +51,7 @@
                         <div class="col-md-6 col-12">
                             <label class="form-label">Name</label>
                             <input wire:model.defer='product.name' type="text" class="form-control" placeholder="Product's Name"
-                                maxlength="75" minlength="5" required>
+                                maxlength="75" minlength="3" required>
                             @error('product.name')
                             <small class="text-danger">{{ $message }}</small>
                             @enderror
@@ -71,7 +71,7 @@
                         <div class="col-md-6 col-12">
                             <label class="form-label">Barcode</label>
                             <input wire:model.defer='product.barcode' type="text" class="form-control" placeholder="Enter product's barcode (49203943)"
-                                maxlength="30" minlength="5" required>
+                                maxlength="30" minlength="3" required>
                             @error('product.barcode')
                             <small class="text-danger">{{ $message }}</small>
                             @enderror

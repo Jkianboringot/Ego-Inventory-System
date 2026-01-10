@@ -27,7 +27,7 @@ class Create extends Component
         return [
             'product.name' => [
                 'required',
-                'max:75','min:5',
+                'max:75','min:3',
                 Rule::unique('products', 'name')->whereNull('deleted_at')
             ],
             'product.brand_id' => 'nullable|exists:brands,id',
@@ -41,7 +41,7 @@ class Create extends Component
             'product.barcode' => [
                 'required',
                 'string',
-                'max:30','min:5',
+                'max:30','min:3',
                 Rule::unique('products', 'barcode')->whereNull('deleted_at')
             ],
             'product.inventory_threshold' => 'required|integer|min:1|max:10000',
