@@ -82,9 +82,9 @@
                         <tr class="text-center">
                             <td><strong>TOTALS</strong></td>
                             <td></td>
+                            <td>
                             <span> <strong>{{ rtrim(rtrim(number_format($purchases->sum('total_amount')  ?? 0, 2), '0'), '.')  }}</strong>
-
-                                <td></td>
+</td>
                                 <td></td>
                                 <td></td>
 

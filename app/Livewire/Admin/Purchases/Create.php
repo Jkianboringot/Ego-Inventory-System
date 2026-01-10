@@ -53,8 +53,8 @@ class Create extends Component
             'quantity' => 'required|min:0.01|max:999999.99',
             'selectedProductId' => 'required',
             'price' => 'required|min:0.01|max:999999.99',
-            'productList'=>'required'
-                                    ,'productList.*.quantity' => 'required|numeric|min:0.01|max:999999', // note: numeric → remove decimals
+            'productList' => 'required',
+            'productList.*.quantity' => 'required|numeric|min:0.01|max:999999', // note: numeric → remove decimals
         ], $paid);
     }
 
@@ -67,7 +67,7 @@ class Create extends Component
         $this->purchase->is_paid = 'Unpaid';
     }
 
- function addToList()
+    function addToList()
     {
         $this->validateOnly('price');
 
@@ -76,24 +76,39 @@ class Create extends Component
 
 
         try {
-          
 
-            foreach ($this->productList as $key => $item) {
-                if ($item['product_id'] == $this->selectedProductId && $item['price'] == $this->price) {
+
+
+            foreach ($this->productList as $key => $listItem) {
+                if ($listItem['product_id'] == $this->selectedProductId && $listItem['price'] == $this->price) {
                     $this->productList[$key]['quantity'] += $this->quantity;
-                    $this->reset(['selectedProductId', 'productSearch', 'quantity', 'price']);
+                    $this->productList[$key]['price'] += $this->price;
                     return;
+                    # code...gs
+
                 }
             }
 
-            $this->productList[] = [
+
+            array_push($this->productList, [
                 'product_id' => $this->selectedProductId,
                 'quantity' => $this->quantity,
-                'price' => $this->price
-            ];
+                'price' => $this->price,
 
-            // Clean up input fields
-            $this->reset(['selectedProductId', 'productSearch', 'quantity', 'price']);
+
+
+            ]);
+
+
+            $this->updatedProductList();
+
+
+            $this->reset([
+                'selectedProductId',
+                'productSearch',
+                'quantity',
+                'price',
+            ]);
         } catch (\Throwable $th) {
             $this->dispatch('done', error: "Something went wrong: " . $th->getMessage());
         }
@@ -127,11 +142,11 @@ class Create extends Component
     {
         $this->validateOnly('purchase.is_paid');
         $this->validateOnly('purchase.date_settled');
-          $this->validateOnly('productList');
+        $this->validateOnly('productList');
         $this->validateOnly('productList.*.quantity');
 
         try {
-           foreach ($this->productList as $listItem) {
+            foreach ($this->productList as $listItem) {
 
                 if ($listItem['quantity'] <= 0) {
                     $this->dispatch('done', error: "Quantity cannot be zero");
@@ -140,29 +155,29 @@ class Create extends Component
             }
             DB::beginTransaction();
 
-                $this->purchase->save();
+            $this->purchase->save();
 
-                foreach ($this->productList as $key => $listItem) {
-                    $this->purchase->products()->attach($listItem['product_id'], [
+            foreach ($this->productList as $key => $listItem) {
+                $this->purchase->products()->attach($listItem['product_id'], [
+                    'quantity'   => $listItem['quantity'],
+                    'unit_price' => $listItem['price'],
+                ]);
+
+                // ✅ Log activity
+                ActivityLog::create([
+                    'user_id'    => auth()->id(),
+                    'action'     => 'purchase_product_added',
+                    'model'      => 'Purchase',
+                    'changes'    => json_encode([
+                        'product_id' => $listItem['product_id'],
                         'quantity'   => $listItem['quantity'],
                         'unit_price' => $listItem['price'],
-                    ]);
-
-                    // ✅ Log activity
-                    ActivityLog::create([
-                        'user_id'    => auth()->id(),
-                        'action'     => 'purchase_product_added',
-                        'model'      => 'Purchase',
-                        'changes'    => json_encode([
-                            'product_id' => $listItem['product_id'],
-                            'quantity'   => $listItem['quantity'],
-                            'unit_price' => $listItem['price'],
-                        ]),
-                        'ip_address' => request()->ip(),
-                        'user_agent' => request()->header('User-Agent'),
-                    ]);
-                }
-                     DB::commit();
+                    ]),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->header('User-Agent'),
+                ]);
+            }
+            DB::commit();
 
             return redirect()->route('admin.purchases.index')
                 ->with('success', 'Successfully Created.');

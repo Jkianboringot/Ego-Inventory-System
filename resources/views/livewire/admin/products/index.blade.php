@@ -104,7 +104,7 @@
                                 <td>
                                     <div>
                                         <strong class="mb-1">{{ $product->name }}</strong>
-                                        <br>    
+                                        <br>
                                         <x-livewire.partials.remarks-reason-modal :var="$product->description" />
 
                                     </div>
@@ -145,14 +145,15 @@
 
                                 <td>
                                     <div class="d-flex flex-column align-items-center">
-                                        <strong class="text-muted">{{ $product->sale_price  }}</strong>
+                                        <strong>{{ rtrim(rtrim(number_format($product->sale_price  ?? 0, 2), '0'), '.')}}</strong>
                                     </div>
                                 </td>
                                 @role(['Admin','Supervisor'])
 
                                 <td>
                                     <div class="d-flex flex-column align-items-center">
-                                        <strong class="text-muted">{{ $product->purchase_price  }}</strong>
+                                        <strong>{{ rtrim(rtrim(number_format($product->purchase_price  ?? 0, 2), '0'), '.')}}</strong>
+
                                     </div>
                                 </td>
                                 @endrole
