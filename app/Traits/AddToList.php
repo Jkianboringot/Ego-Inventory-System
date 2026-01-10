@@ -37,7 +37,7 @@ trait AddToList
                     'quantity',
 
                 ]);
-            } elseif (in_array($this->context, ['purchases','returns'])) {
+            } elseif (in_array($this->context, ['returns'])) {
                
 
                 foreach ($this->productList as $key => $listItem) {

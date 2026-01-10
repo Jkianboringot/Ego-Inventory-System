@@ -116,9 +116,7 @@ class Edit extends Component
 
 
         try {
-            if (!$this->selectedProductId || !$this->quantity || !$this->price) {
-                throw new \Exception('All product fields are required.');
-            }
+           
 
             foreach ($this->productList as $key => $item) {
                 if ($item['product_id'] == $this->selectedProductId && $item['price'] == $this->price) {

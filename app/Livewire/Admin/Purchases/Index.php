@@ -18,6 +18,7 @@ class Index extends Component
 
     public string $search = '';
     protected $paginationTheme = 'bootstrap';
+    public $title='Purchases list';
 
     public function updatingSearch(): void
     {

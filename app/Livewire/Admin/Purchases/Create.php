@@ -27,7 +27,7 @@ class Create extends Component
     use DeleteCartItem;
     use SelectSupplier;
     use LoadedProducts;
-    use AddToList;
+    // use AddToList;
 
     public $supplierSearch;
     protected string $context = 'purchases';
@@ -67,7 +67,37 @@ class Create extends Component
         $this->purchase->is_paid = 'Unpaid';
     }
 
+ function addToList()
+    {
+        $this->validateOnly('price');
 
+        $this->validateOnly('quantity');
+        $this->validateOnly('selectedProductId');
+
+
+        try {
+          
+
+            foreach ($this->productList as $key => $item) {
+                if ($item['product_id'] == $this->selectedProductId && $item['price'] == $this->price) {
+                    $this->productList[$key]['quantity'] += $this->quantity;
+                    $this->reset(['selectedProductId', 'productSearch', 'quantity', 'price']);
+                    return;
+                }
+            }
+
+            $this->productList[] = [
+                'product_id' => $this->selectedProductId,
+                'quantity' => $this->quantity,
+                'price' => $this->price
+            ];
+
+            // Clean up input fields
+            $this->reset(['selectedProductId', 'productSearch', 'quantity', 'price']);
+        } catch (\Throwable $th) {
+            $this->dispatch('done', error: "Something went wrong: " . $th->getMessage());
+        }
+    }
 
 
     function selectProduct($id)

@@ -104,6 +104,7 @@
                                 <td>
                                     <div>
                                         <strong class="mb-1">{{ $product->name }}</strong>
+                                        <br>    
                                         <x-livewire.partials.remarks-reason-modal :var="$product->description" />
 
                                     </div>

@@ -1,8 +1,8 @@
 <div wire:init="loadData">
-    <x-slot:header>Purchases</x-slot:header>
+    <x-slot:header>{{ $title }}</x-slot:header>
 
     <div class="card shadow">
-        <x-livewire.partials.new-header-form title="Purchase" route="purchases" />
+        <x-livewire.partials.new-header-form title="{{$title}}" route="purchases" />
 
 
         <div class="card-body">
@@ -82,7 +82,7 @@
                         <tr class="text-center">
                             <td><strong>TOTALS</strong></td>
                             <td></td>
-                            <span> <strong>{{ rtrim(rtrim(number_format($purchases->sum('total_amount'))  ?? 0, 2), '0'), '.')  }}</strong>
+                            <span> <strong>{{ rtrim(rtrim(number_format($purchases->sum('total_amount')  ?? 0, 2), '0'), '.')  }}</strong>
 
                                 <td></td>
                                 <td></td>

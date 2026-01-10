@@ -16,6 +16,7 @@ class UnsettledPurchases extends Component
     use WithPagination;
 
     public $search = '';
+    public $title='Unsettled Purchases';
     public $readyToLoad = false;
     protected $paginationTheme = 'bootstrap';
 
