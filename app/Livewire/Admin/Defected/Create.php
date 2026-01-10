@@ -55,7 +55,7 @@ class Create extends Component
     function rules()
     {
         return [
-            'defected.remarks' => 'nullable|max:255',
+            'defected.remarks' => 'nullable|max:255|min:1',
             'quantity' => 'required|min:0.01|max:999999.99',
             'selectedProductId' => 'required',
             'price' => 'required|min:0.01|max:999999.99',
