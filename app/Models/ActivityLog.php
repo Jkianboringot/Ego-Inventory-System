@@ -12,16 +12,16 @@ class ActivityLog extends Model
         'model',
         'changes',
         'ip_address',
+        'country',      // ADD THIS
+        'region',       // ADD THIS
+        'city',         // ADD THIS
         'user_agent'
     ];
 
-    
-    
     protected $casts = [
         'changes' => 'array',
     ];
 
-  
     public function user()
     {
         return $this->belongsTo(User::class);

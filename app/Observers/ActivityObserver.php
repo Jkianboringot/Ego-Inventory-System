@@ -56,20 +56,15 @@ class ActivityObserver
                 $isDefault = $locationData['default'] ?? false;
                 
                 if (!$isDefault) {
-                    // Real geolocation data
-                    $country = $locationData['country'] ?? 'Philippines';
+                    // Real geolocation data - use the correct property names
+                    $country = $locationData['country'] ?? 'Unknown';
                     $region = $locationData['state_name'] ?? $locationData['state'] ?? 'Unknown';
                     $city = $locationData['city'] ?? 'Unknown';
                 } else {
                     // Fallback data - database not configured properly
-                    $country = 'Unknown (DB not configured)';
+                    $country = 'Unknown';
                     $region = 'Unknown';
                     $city = 'Unknown';
-                    
-                    \Log::warning('GeoIP returning default data. Run: php artisan geoip:update', [
-                        'ip' => $ip,
-                        'location_data' => $locationData
-                    ]);
                 }
             } catch (\Exception $e) {
                 // Log error if geoip fails
@@ -100,6 +95,20 @@ class ActivityObserver
      */
     protected function isPrivateIP($ip)
     {
+        // Handle IPv6 addresses
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            // Check for IPv6 localhost
+            if (in_array($ip, ['::1', '::ffff:127.0.0.1'])) {
+                return true;
+            }
+            // Check for IPv6 private ranges (fc00::/7, fe80::/10)
+            if (strpos($ip, 'fc') === 0 || strpos($ip, 'fd') === 0 || strpos($ip, 'fe80') === 0) {
+                return true;
+            }
+            return false;
+        }
+
+        // Handle IPv4 addresses
         $private_ranges = [
             '10.0.0.0|10.255.255.255',
             '172.16.0.0|172.31.255.255',
