@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Order;
-use Barryvdh\DomPDF\Facade\PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Database\Factories\OrderFactory;
 use Illuminate\Support\Facades\Route;
 use App\Models\Product;
@@ -27,7 +27,7 @@ Route::middleware([
         // Reduce barcode height to fit label
         $barcodeImage = base64_encode($generator->getBarcode($barcodeNumber, $generator::TYPE_CODE_128, 3, 30));
 
-        return PDF::loadView('pdf.barcode-label', [
+        return Pdf::loadView('pdf.barcode-label', [
             'product' => $product,
             'barcodeImage' => $barcodeImage
         ])
