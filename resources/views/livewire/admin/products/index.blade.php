@@ -1,65 +1,63 @@
 <div wire:init="loadData" x-data="{ descriptionModal: '', supplierModal: [] }">
     <x-slot:header>Products</x-slot:header>
 
+    <div class="card shadow">
+        <x-livewire.partials.new-header-form title="Products" route="products" />
 
-    <div class="card shadow ">
-
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="text-white fw-semibold mb-0">Products list</h5>
-                @role(['Admin','Supervisor'])
-
-                <form action="{{ route('admin.products.create') }}" onsubmit="showLoading(event)">
-                    <button
-                        type="submit"
-                        class="btn-inv-secondary"
-                        id="createBtn">
-                        <span id="btnText">
-                            <i class="bi bi-plus-circle me-1"></i>
-                            Create
-                        </span>
-                        <span id="btnLoading" style="display:none;">
-                            <i class="bi bi-arrow-repeat spin me-1"></i>
-                            Loading...
-                        </span>
-                    </button>
-                </form>
-                @endrole
-
-            </div>
-        </div>
-
-        <script>
-            function showLoading(e) {
-                const btnText = document.getElementById('btnText');
-                const btnLoading = document.getElementById('btnLoading');
-                btnText.style.display = 'none';
-                btnLoading.style.display = 'inline-block';
-            }
-        </script>
-
-        <style>
-            .spin {
-                display: inline-block;
-                animation: spin 1s linear infinite;
-            }
-
-            @keyframes spin {
-                0% {
-                    transform: rotate(0deg);
-                }
-
-                100% {
-                    transform: rotate(360deg);
-                }
-            }
-        </style>
         <div class="card-body">
             <x-livewire.partials.search-bar :$search />
 
+            <!-- Filters Section -->
+            <div class="row mb-3 g-2">
+                @role(['Admin','Supervisor'])
+                <div class="col-md-3">
+                    <label for="supplierFilter" class="form-label">
+                        <i class="bi bi-truck me-1"></i>Filter by Supplier
+                    </label>
+                    <select wire:model.live="supplierFilter" id="supplierFilter" class="form-select">
+                        <option value="">All Suppliers</option>
+                        @foreach($suppliers as $supplier)
+                            <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                @endrole
+
+                <div class="col-md-3">
+                    <label for="categoryFilter" class="form-label">
+                        <i class="bi bi-folder me-1"></i>Filter by Category
+                    </label>
+                    <select wire:model.live="categoryFilter" id="categoryFilter" class="form-select">
+                        <option value="">All Categories</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="brandFilter" class="form-label">
+                        <i class="bi bi-tag me-1"></i>Filter by Brand
+                    </label>
+                    <select wire:model.live="brandFilter" id="brandFilter" class="form-select">
+                        <option value="">All Brands</option>
+                        @foreach($brands as $brand)
+                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                @if($search || $supplierFilter || $categoryFilter || $brandFilter)
+                <div class="col-md-3 d-flex align-items-end">
+                    <button wire:click="resetFilters" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-x-circle me-1"></i>Reset Filters
+                    </button>
+                </div>
+                @endif
+            </div>
+
             @if($readyToLoad)
             <x-livewire.partials.empty-result-form :var="$products" msg="Product" :search="$search">
-
 
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
@@ -74,17 +72,13 @@
                                 <th>Brand</th>
                                 <th>Category</th>
                                 <th>Stock</th>
-
                                 <th>Selling Price</th>
                                 @role(['Admin','Supervisor'])
-
                                 <th>Unit Cost</th>
                                 @endrole
-
-                                @role(['Admin','Supervisor','Inventory Clerk'])
+                                @role(['Admin','Supervisor','Tagger'])
                                 <th>Actions</th>
                                 @endrole
-
                             </tr>
                         </thead>
                         <tbody>
@@ -104,9 +98,7 @@
                                 <td>
                                     <div>
                                         <strong class="mb-1">{{ $product->name }}</strong>
-                                        <br>
                                         <x-livewire.partials.remarks-reason-modal :var="$product->description" />
-
                                     </div>
                                 </td>
                                 @role(['Admin','Supervisor'])
@@ -123,11 +115,9 @@
                                 @endrole
                                 <td>
                                     <span>{{ $product->brand->name??'N/A' }}</span>
-
                                 </td>
                                 <td>
                                     <span>{{ $product->category->name??'N/A' }}</span>
-
                                 </td>
                                 <td>
                                     @if($product->inventory_balance <= $product->inventory_threshold)
@@ -138,41 +128,31 @@
                                             </span>
                                             <small class="text-danger mt-1">Low Stock</small>
                                         </div>
-                                        @else
+                                    @else
                                         <span class="badge bg-success">{{ $product->inventory_balance }}</span>
-                                        @endif
+                                    @endif
                                 </td>
-
                                 <td>
                                     <div class="d-flex flex-column align-items-center">
-                                        <strong>{{ rtrim(rtrim(number_format($product->sale_price  ?? 0, 2), '0'), '.')}}</strong>
+                                        <strong class="text-muted">{{ $product->sale_price }}</strong>
                                     </div>
                                 </td>
                                 @role(['Admin','Supervisor'])
-
                                 <td>
                                     <div class="d-flex flex-column align-items-center">
-                                        <strong>{{ rtrim(rtrim(number_format($product->purchase_price  ?? 0, 2), '0'), '.')}}</strong>
-
+                                        <strong class="text-muted">{{ $product->purchase_price }}</strong>
                                     </div>
                                 </td>
                                 @endrole
-
-
-
                                 <td>
                                     <a target="_blank" href="{{ route('admin.barcode.print',$product->id) }}"
-
                                         class="btn btn-primary">
-                                        <i class="bi bi-file-earmark-arrow-down "></i>
+                                        <i class="bi bi-file-earmark-arrow-down"></i>
                                     </a>
                                     @role(['Admin','Supervisor'])
-
                                     <x-livewire.partials.edit-delete-form route="products" id="{{$product->id}}" />
                                     @endrole
-
                                 </td>
-
                             </tr>
                             @endforeach
                         </tbody>
@@ -180,7 +160,6 @@
                 </div>
 
                 <div class="mt-3 d-flex justify-content-between align-items-center">
-
                     {{ $products->links() }}
                 </div>
 

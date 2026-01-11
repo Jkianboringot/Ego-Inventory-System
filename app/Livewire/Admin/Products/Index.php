@@ -3,25 +3,52 @@
 namespace App\Livewire\Admin\Products;
 
 use App\Models\Product;
+use App\Models\Supplier;
+use App\Models\ProductCategory;
+use App\Models\Brand;
 use App\Traits\LoadData;
-  use Livewire\Component;
+use Livewire\Component;
 use Livewire\WithPagination;
-  use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage;
 
 class Index extends Component
 {
     use WithPagination;
-           use LoadData;
-
+    use LoadData;
 
     public string $search = '';
+    public string $supplierFilter = '';
+    public string $categoryFilter = '';
+    public string $brandFilter = '';
 
     protected $paginationTheme = 'bootstrap';
 
- 
-
     public function updatingSearch()
     {
+        $this->resetPage();
+    }
+
+    public function updatingSupplierFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingCategoryFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingBrandFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->supplierFilter = '';
+        $this->categoryFilter = '';
+        $this->brandFilter = '';
         $this->resetPage();
     }
 
@@ -33,8 +60,7 @@ class Index extends Component
             // Check if product has any transactions using exists() for better performance
             if ($product->purchases()->exists() || 
                 $product->sales()->exists() ||
-                $product->add_products()->exists()
-                ||
+                $product->add_products()->exists() ||
                 $product->returns()->exists()) {
                 throw new \Exception("Permission: This product has been bought and/or sold.");
             }
@@ -131,6 +157,15 @@ class Index extends Component
                       ->orWhereHas('supplier', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
                 });
             })
+            ->when($this->supplierFilter, function ($query) {
+                $query->where('products.supplier_id', $this->supplierFilter);
+            })
+            ->when($this->categoryFilter, function ($query) {
+                $query->where('products.product_category_id', $this->categoryFilter);
+            })
+            ->when($this->brandFilter, function ($query) {
+                $query->where('products.brand_id', $this->brandFilter);
+            })
             ->with([
                 'category:id,name',
                 'unit:id,name',
@@ -138,10 +173,25 @@ class Index extends Component
                 'brand:id,name'
             ])
             ->orderBy('products.created_at', 'desc')
-            ->simplePaginate(10);
+            ->simplePaginate(50);
+
+        $suppliers = Supplier::select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        $categories = ProductCategory::select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        $brands = Brand::select('id', 'name')
+            ->orderBy('name')
+            ->get();
 
         return view('livewire.admin.products.index', [
             'products' => $products,
+            'suppliers' => $suppliers,
+            'categories' => $categories,
+            'brands' => $brands,
         ]);
     }
 }

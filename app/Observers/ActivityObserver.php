@@ -34,7 +34,8 @@ class ActivityObserver
 
     protected function logActivity($action, $model, $changes = null)
     {
-        $ip = request()?->ip();
+        // Get real IP address, considering proxies/load balancers
+        $ip = $this->getRealIpAddress();
 
         // Fallback if no HTTP request (artisan, job, seed, etc.)
         if (! $ip) {
@@ -88,6 +89,56 @@ class ActivityObserver
             'city'       => $city,
             'user_agent' => request()?->header('User-Agent'),
         ]);
+    }
+
+    /**
+     * Get the real IP address from request headers
+     */
+    protected function getRealIpAddress()
+    {
+        $request = request();
+        
+        if (!$request) {
+            return null;
+        }
+
+        // Check various headers that proxies/load balancers use
+        $headers = [
+            'HTTP_CF_CONNECTING_IP',    // Cloudflare
+            'HTTP_X_REAL_IP',            // Nginx proxy
+            'HTTP_X_FORWARDED_FOR',      // Standard proxy header
+            'HTTP_CLIENT_IP',            // Some proxies
+            'REMOTE_ADDR',               // Direct connection
+        ];
+
+        $fallbackIp = null;
+
+        foreach ($headers as $header) {
+            $ip = $request->server($header);
+            
+            if ($ip) {
+                // HTTP_X_FORWARDED_FOR can contain multiple IPs (client, proxy1, proxy2)
+                // We want the first one (the client's real IP)
+                if (strpos($ip, ',') !== false) {
+                    $ips = array_map('trim', explode(',', $ip));
+                    $ip = $ips[0];
+                }
+                
+                // Validate the IP address
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                    return $ip;
+                }
+                
+                // If it's a valid IP but private/reserved, continue checking other headers
+                if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                    // Store it as fallback in case we don't find a public IP
+                    $fallbackIp = $fallbackIp ?? $ip;
+                }
+            }
+        }
+
+        // Return fallback IP or Laravel's default method
+        return $fallbackIp ?? $request->ip();
     }
 
     /**

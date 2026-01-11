@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
                             //what controll where what happen when somthing has no permissin
                             //check CheckPermission
         ]);
+          $middleware->trustProxies(at: '*');
     })
     ->withProviders([
         // ADD THIS LINE - Register your Permission Service Provider

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'approved', 'rejected', 'edit_pending'])->default('pending');
 
             $table->string('reason',255);
-            $table->string('sale_invoice',50)->nullable();
+            $table->string('sale_invoice',22)->nullable();
 
             $table->softDeletes();
 

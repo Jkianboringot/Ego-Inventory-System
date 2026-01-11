@@ -55,7 +55,7 @@
                                 </span>
                             </td>
                             <td>
-                                <x-livewire.partials.remarks-reason-modal :var="$return->sale_invoice" />
+                                {{ $return->sale_invoice }}
                             </td>
 
                             <td>{{ \Carbon\Carbon::parse($return->created_at)->format('jS F, Y') }}</td>
