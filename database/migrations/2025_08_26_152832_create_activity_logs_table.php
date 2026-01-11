@@ -18,9 +18,7 @@ return new class extends Migration
     $table->string('model',30); 
     $table->json('changes')->nullable(); 
     $table->string('ip_address')->nullable();
-    $table->string('country')->nullable();
-    $table->string('region')->nullable();
-    $table->string('city')->nullable();
+  
     $table->string('user_agent')->nullable();
     $table->timestamps();
 });

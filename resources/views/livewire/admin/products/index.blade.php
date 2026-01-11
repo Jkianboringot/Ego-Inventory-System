@@ -1,60 +1,68 @@
 <div wire:init="loadData" x-data="{ descriptionModal: '', supplierModal: [] }">
-    <x-slot:header>Products</x-slot:header>
 
     <div class="card shadow">
-        <x-livewire.partials.new-header-form title="Products" route="products" />
 
-        <div class="card-body">
-            <x-livewire.partials.search-bar :$search />
+        <!-- HEADER -->
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
 
-            <!-- Filters Section -->
-            <div class="row mb-3 g-2">
-                @role(['Admin','Supervisor'])
-                <div class="col-md-3">
-                    <label for="supplierFilter" class="form-label">
-                        <i class="bi bi-truck me-1"></i>Filter by Supplier
-                    </label>
-                    <select wire:model.live="supplierFilter" id="supplierFilter" class="form-select">
+                <!-- TITLE -->
+                <h5 class="text-white fw-semibold mb-0">Product list</h5>
+
+                <!-- FILTERS + CREATE BUTTON -->
+                <div class="d-flex align-items-center gap-2">
+
+                    @role(['Admin','Supervisor'])
+                    <select wire:model.live="supplierFilter" class="form-select form-select-sm" style="width:150px;">
                         <option value="">All Suppliers</option>
                         @foreach($suppliers as $supplier)
                             <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                         @endforeach
                     </select>
-                </div>
-                @endrole
+                    @endrole
 
-                <div class="col-md-3">
-                    <label for="categoryFilter" class="form-label">
-                        <i class="bi bi-folder me-1"></i>Filter by Category
-                    </label>
-                    <select wire:model.live="categoryFilter" id="categoryFilter" class="form-select">
+                    <select wire:model.live="categoryFilter" class="form-select form-select-sm" style="width:150px;">
                         <option value="">All Categories</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
                     </select>
-                </div>
 
-                <div class="col-md-3">
-                    <label for="brandFilter" class="form-label">
-                        <i class="bi bi-tag me-1"></i>Filter by Brand
-                    </label>
-                    <select wire:model.live="brandFilter" id="brandFilter" class="form-select">
+                    <select wire:model.live="brandFilter" class="form-select form-select-sm" style="width:150px;">
                         <option value="">All Brands</option>
                         @foreach($brands as $brand)
                             <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                         @endforeach
                     </select>
-                </div>
 
-                @if($search || $supplierFilter || $categoryFilter || $brandFilter)
-                <div class="col-md-3 d-flex align-items-end">
-                    <button wire:click="resetFilters" class="btn btn-outline-secondary w-100">
-                        <i class="bi bi-x-circle me-1"></i>Reset Filters
+                    @if($search || $supplierFilter || $categoryFilter || $brandFilter)
+                    <button wire:click="resetFilters" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-x-circle me-1"></i>Reset
                     </button>
+                    @endif
+
+                    <form action="{{ route('admin.products.create') }}" onsubmit="showLoading(event)">
+                        <button type="submit" class="btn-inv-secondary btn-sm" id="createBtn">
+                            <span id="btnText">
+                                <i class="bi bi-plus-circle me-1"></i>Create
+                            </span>
+                            <span id="btnLoading" style="display:none;">
+                                <i class="bi bi-arrow-repeat spin me-1"></i>Loading...
+                            </span>
+                        </button>
+                    </form>
+
                 </div>
-                @endif
             </div>
+        </div>
+
+        <!-- BODY -->
+        <div class="card-body">
+
+            <x-livewire.partials.search-bar :$search />
+
+            <!-- Filters Section (optional duplicate, can remove if already in header) -->
+            <!-- ... keep your filters row here if needed ... -->
 
             @if($readyToLoad)
             <x-livewire.partials.empty-result-form :var="$products" msg="Product" :search="$search">
@@ -84,15 +92,13 @@
                         <tbody>
                             @foreach ($products as $product)
                             <tr class="text-center">
-                                <td>
-                                    <span class="md-1"><strong>{{ $product->barcode }}</strong></span>
-                                </td>
+                                <td><strong>{{ $product->barcode }}</strong></td>
                                 <td>
                                     @if($product->location)
-                                    <i class="bi bi-geo-alt-fill text-primary me-1"></i>
-                                    <small>{{ $product->location }}</small>
+                                        <i class="bi bi-geo-alt-fill text-primary me-1"></i>
+                                        <small>{{ $product->location }}</small>
                                     @else
-                                    <span class="text-muted">N/A</span>
+                                        <span class="text-muted">N/A</span>
                                     @endif
                                 </td>
                                 <td>
@@ -104,21 +110,17 @@
                                 @role(['Admin','Supervisor'])
                                 <td>
                                     @if($product->supplier)
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-truck text-info me-2"></i>
-                                        <span>{{ $product->supplier->name }}</span>
-                                    </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-truck text-info me-2"></i>
+                                            <span>{{ $product->supplier->name }}</span>
+                                        </div>
                                     @else
-                                    <span class="text-muted">N/A</span>
+                                        <span class="text-muted">N/A</span>
                                     @endif
                                 </td>
                                 @endrole
-                                <td>
-                                    <span>{{ $product->brand->name??'N/A' }}</span>
-                                </td>
-                                <td>
-                                    <span>{{ $product->category->name??'N/A' }}</span>
-                                </td>
+                                <td>{{ $product->brand->name ?? 'N/A' }}</td>
+                                <td>{{ $product->category->name ?? 'N/A' }}</td>
                                 <td>
                                     @if($product->inventory_balance <= $product->inventory_threshold)
                                         <div class="d-flex flex-column align-items-center">
@@ -132,21 +134,12 @@
                                         <span class="badge bg-success">{{ $product->inventory_balance }}</span>
                                     @endif
                                 </td>
-                                <td>
-                                    <div class="d-flex flex-column align-items-center">
-                                        <strong class="text-muted">{{ $product->sale_price }}</strong>
-                                    </div>
-                                </td>
+                                <td><strong class="text-muted">{{ $product->sale_price }}</strong></td>
                                 @role(['Admin','Supervisor'])
-                                <td>
-                                    <div class="d-flex flex-column align-items-center">
-                                        <strong class="text-muted">{{ $product->purchase_price }}</strong>
-                                    </div>
-                                </td>
+                                <td><strong class="text-muted">{{ $product->purchase_price }}</strong></td>
                                 @endrole
                                 <td>
-                                    <a target="_blank" href="{{ route('admin.barcode.print',$product->id) }}"
-                                        class="btn btn-primary">
+                                    <a target="_blank" href="{{ route('admin.barcode.print',$product->id) }}" class="btn btn-primary">
                                         <i class="bi bi-file-earmark-arrow-down"></i>
                                     </a>
                                     @role(['Admin','Supervisor'])
@@ -172,6 +165,16 @@
                 <p class="text-muted mt-3">Loading products...</p>
             </div>
             @endif
-        </div>
-    </div>
-</div>
+
+        </div> <!-- END CARD BODY -->
+
+    </div> <!-- END CARD -->
+
+</div> <!-- END ROOT DIV -->
+
+<script>
+function showLoading() {
+    document.getElementById('btnText').style.display = 'none';
+    document.getElementById('btnLoading').style.display = 'inline-block';
+}
+</script>
